@@ -1,4 +1,5 @@
 import { Document, Schema } from 'mongoose';
+import * as Joi from 'joi';
 
 export interface IExampleDocument extends Document {
   description: string;
@@ -17,3 +18,7 @@ export interface IExampleRequest {
   description: string;
   createdAt?: Date;
 }
+
+export const ExampleJoi = Joi.object({
+  description: Joi.string().required(),
+});
