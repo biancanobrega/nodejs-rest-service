@@ -3,8 +3,6 @@ import * as path from 'path';
 
 //Read Configurations
 const configs = new nconf.Provider({
-  env: true,
-  argv: true,
   store: {
     type: 'file',
     file: path.join(

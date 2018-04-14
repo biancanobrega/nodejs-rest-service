@@ -1,14 +1,15 @@
 import * as Mongoose from "mongoose";
-import { IDataConfiguration } from "./config";
+import { IDataConfiguration, getDatabaseConfigs } from "./config";
 import { IExampleDocument, ExampleSchema } from "../src/models/example";
 
+export let databaseModels: IDatabase;
 export interface IDatabase {
   exampleModel: Mongoose.Model<IExampleDocument>;
 }
 
-export function init(config: IDataConfiguration): IDatabase {
-  Mongoose.connect(config.connectionString);
-  const connection = Mongoose.connection;
+export function init() {
+  const config = getDatabaseConfigs();
+  const connection = Mongoose.createConnection(config.connectionString);
 
   connection.on('error', () => {
     console.log(`Unable to connect to database: ${config.connectionString}`);
@@ -18,9 +19,7 @@ export function init(config: IDataConfiguration): IDatabase {
     console.log(`Connected to database: ${config.connectionString}`);
   });
 
-  const exampleModel = connection.model<IExampleDocument> ('Example', ExampleSchema);
-
-  return {
-    exampleModel: exampleModel,
+  databaseModels = {
+    exampleModel: connection.model<IExampleDocument> ('Example', ExampleSchema)
   };
 }

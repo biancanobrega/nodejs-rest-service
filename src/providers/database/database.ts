@@ -2,7 +2,7 @@ import { Document, Model } from 'mongoose';
 import * as ErrorUtil from '../../commons/utils/error';
 
 export abstract class DatabaseService<T extends Document> {
-  protected Model: Model<T>;
+  private Model: Model<T>;
 
   constructor(model: Model<T>) {
     this.Model = model;
@@ -55,5 +55,9 @@ export abstract class DatabaseService<T extends Document> {
       console.log('[DataBaseService - remove]: ', error);
       throw ErrorUtil.generateDatabaseError(error);
     }
+  }
+
+  public get model(): Model<T> {
+    return this.Model;
   }
 }

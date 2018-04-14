@@ -9,8 +9,8 @@ import ExampleDatabase from '../providers/database/example';
 export default class ExampleController {
   private exampleDatabase: ExampleDatabase;
 
-  constructor(database: IDatabase) {
-    this.exampleDatabase = new ExampleDatabase(database);
+  constructor() {
+    this.exampleDatabase = new ExampleDatabase();
   }
 
   public async add(req: Express.Request, res: Express.Response) {
@@ -45,7 +45,6 @@ export default class ExampleController {
     }
   }
 
-  // @ts-ignore
   public async findAll(req: Express.Request, res: Express.Response) {
     try {
       const result = await this.exampleDatabase.findAll();

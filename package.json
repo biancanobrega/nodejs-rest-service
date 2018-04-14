@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "",
-    "cp-config": "mkdir -p build/config/env && cp config/env/config.\"$NODE_ENV\".json build/config/env",
+    "cp-config": "mkdir -p build/config/env && cp config/env/config.dev.json build/config/env",
     "build": "tsc && npm run cp-config && npm start",
     "start": "node build/app.js"
   },
