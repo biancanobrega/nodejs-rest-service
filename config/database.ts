@@ -1,6 +1,6 @@
-import * as Mongoose from "mongoose";
-import { IDataConfiguration, getDatabaseConfigs } from "./config";
-import { IExampleDocument, ExampleSchema } from "../src/models/example";
+import * as Mongoose from 'mongoose';
+import { IDataConfiguration, getDatabaseConfigs } from './config';
+import { IExampleDocument, ExampleSchema } from '../src/models/example';
 
 export let databaseModels: IDatabase;
 export interface IDatabase {
@@ -20,6 +20,6 @@ export function init() {
   });
 
   databaseModels = {
-    exampleModel: connection.model<IExampleDocument> ('Example', ExampleSchema)
+    exampleModel: connection.model<IExampleDocument>('Example', ExampleSchema)
   };
 }

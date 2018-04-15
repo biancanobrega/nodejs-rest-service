@@ -23,9 +23,7 @@ export default function(server: Router) {
     exampleController.findById.bind(exampleController)
   );
 
-  server.get(
-    '/v1/examples',
-    exampleController.findAll.bind(exampleController));
+  server.get('/v1/examples', exampleController.findAll.bind(exampleController));
 
   server.delete(
     '/v1/example/:id',
