@@ -1,6 +1,6 @@
 *Read this in other languages: [English](README.md), [Português](README.pt-BR.md)*
 
-# Example Microservice
+# Microservice Example
 Rest Service with Node.js, TypeScript, Express and Mongoose.
 
 ## Endpoints
