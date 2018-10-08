@@ -4,9 +4,10 @@
   "description": "Rest Service structure with Node.js, TypeScript, Express and Mongoose.",
   "main": "app.js",
   "scripts": {
-    "test": "",
-    "cp-config": "mkdir -p build/config/env && cp config/env/config.dev.json build/config/env",
     "build": "tsc && npm run cp-config && npm start",
+    "cp-config": "mkdir -p build/src/configurations/env && cp src/configurations/env/config.\"$NODE_ENV\".json build/src/configurations/env",
+    "lint": "tslint src/**/*.ts -p tsconfig.json -t verbose",
+    "lint-fix": "tslint --fix src/**/*.ts -p tsconfig.json -t verbose",
     "start": "node build/app.js"
   },
   "repository": {
@@ -24,17 +25,20 @@
     "express": "^4.16.3",
     "http-status": "^1.0.1",
     "joi": "^13.1.2",
-    "mongoose": "^5.0.13",
+    "mongoose": "^5.2.16",
     "nconf": "^0.10.0",
-    "path": "^0.12.7"
+    "winston": "^3.0.0"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.16.5",
     "@types/express": "^4.11.1",
     "@types/http-status": "^0.2.30",
     "@types/joi": "^13.0.7",
-    "@types/mongoose": "^5.0.8",
+    "@types/mongoose": "^5.2.16",
     "@types/nconf": "0.0.37",
+    "@types/node": "^9.6.0",
+    "@types/winston": "^2.3.9",
     "tslint": "^5.9.1",
-    "typescript": "^2.8.1"
+    "typescript": "^2.5.3"
   }
 }

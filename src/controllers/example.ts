@@ -1,85 +1,85 @@
-import * as Express from 'express';
+import { Request, Response } from 'express';
 import * as HTTP_CODES from 'http-status';
-import { IDatabase } from '../../config/database';
-import { IExampleRequest, IExampleDocument } from '../models/example';
+import { Enums, logger, Utils } from '../commons';
+import { DataSchema, Interfaces } from '../models';
+import { Repository } from '../providers';
 
-import * as ErrorUtil from '../commons/utils/error';
-import ExampleDatabase from '../providers/database/example';
-
-export default class ExampleController {
-  private exampleDatabase: ExampleDatabase;
+export default class AppsController {
+  private exampleRepository: Repository.ExampleRepository;
 
   constructor() {
-    this.exampleDatabase = new ExampleDatabase();
+    this.exampleRepository = new Repository.ExampleRepository();
   }
 
-  public async add(req: Express.Request, res: Express.Response) {
+  public add = async (req: Request, res: Response) => {
     try {
-      const description: string = req.body.description;
-
-      let example: IExampleRequest = {
-        description
-      };
-
-      const result = await this.exampleDatabase.add(
-        example as IExampleDocument
+      const example: Interfaces.IExample = req.body;
+      const result = await this.exampleRepository.add(
+        example as DataSchema.Example.IDoc
       );
-      res.status(HTTP_CODES.CREATED).send({ example: result });
+      res.status(HTTP_CODES.CREATED).send(result);
     } catch (error) {
-      res.status(ErrorUtil.generateHttpCode(error)).send(error.errors);
+      logger.error(`[AppsController - add: ${error.message}]`);
+      res.status(Utils.ErrorUtil.generateCodeHttp(error)).send(error.message);
     }
   }
 
-  public async findById(req: Express.Request, res: Express.Response) {
+  public update = async (req: Request, res: Response) => {
     try {
-      const id = req.params.id;
-      const result = await this.exampleDatabase.findById(id);
-
-      if (result) {
-        res.send({ example: result });
-      } else {
-        res.sendStatus(HTTP_CODES.NO_CONTENT);
-      }
-    } catch (error) {
-      res.status(ErrorUtil.generateHttpCode(error)).send(error.errors);
-    }
-  }
-
-  public async findAll(req: Express.Request, res: Express.Response) {
-    try {
-      const result = await this.exampleDatabase.findAll();
-      if (typeof result !== undefined && result.length > 0) {
-        res.send({ examples: result });
-      } else {
-        res.sendStatus(HTTP_CODES.NO_CONTENT);
-      }
-    } catch (error) {
-      res.status(ErrorUtil.generateHttpCode(error)).send(error.errors);
-    }
-  }
-
-  public async update(req: Express.Request, res: Express.Response) {
-    try {
-      const example: IExampleRequest = {
-        description: req.body.description
-      };
-      const result = await this.exampleDatabase.update(
-        req.params.id,
-        example as IExampleDocument
+      const exampleId: string = req.params.id;
+      const example: Interfaces.IExample = req.body;
+      const result = await this.exampleRepository.update(
+        exampleId,
+        example as DataSchema.Example.IDoc
       );
-      res.send({ example: result });
+      res.send(result);
     } catch (error) {
-      res.status(ErrorUtil.generateHttpCode(error)).send(error.errors);
+      logger.error(`[AppsController - update: ${error.message}]`);
+      res.status(Utils.ErrorUtil.generateCodeHttp(error)).send(error.message);
     }
   }
 
-  public async remove(req: Express.Request, res: Express.Response) {
+  public updateParams = async (req: Request, res: Response) => {
     try {
-      const id = req.params.id;
-      await this.exampleDatabase.remove(id);
-      res.send({ message: 'Example successfully removed' });
+      const exampleId: string = req.params.id;
+      const example: Interfaces.IExample = req.body;
+      const result = await this.exampleRepository.update(
+        exampleId,
+        example as DataSchema.Example.IDoc
+      );
+      res.send(result);
     } catch (error) {
-      res.status(ErrorUtil.generateHttpCode(error)).send(error.errors);
+      logger.error(`[AppsController - updateParams: ${error.message}]`);
+      res.status(Utils.ErrorUtil.generateCodeHttp(error)).send(error.message);
+    }
+  }
+
+  public findAll = async (req: Request, res: Response) => {
+    try {
+      const query: Enums.Example.InformationsFields[] = req.query.fields;
+
+      const fields = query ? Utils.StringUtil.arrayToString(query) : undefined;
+      const result = await this.exampleRepository.findAll(fields);
+      typeof result !== undefined && result.length > 0
+        ? res.send(result)
+        : res.sendStatus(HTTP_CODES.NO_CONTENT);
+    } catch (error) {
+      logger.error(`[AppsController - findAll: ${error.message}]`);
+      res.status(Utils.ErrorUtil.generateCodeHttp(error)).send(error.message);
+    }
+  }
+
+  public findById = async (req: Request, res: Response) => {
+    try {
+      const appId: string = req.params.id;
+      const query: Enums.Example.InformationsFields[] = req.query.fields;
+
+      const fields = query ? Utils.StringUtil.arrayToString(query) : undefined;
+      const result = await this.exampleRepository.findById(appId, fields);
+      result ? res.send(result) : res.sendStatus(HTTP_CODES.NO_CONTENT);
+    } catch (error) {
+      logger.error(`[AppsController - findAll: ${error.message}]`);
+      res.status(Utils.ErrorUtil.generateCodeHttp(error)).send(error.message);
     }
   }
 }

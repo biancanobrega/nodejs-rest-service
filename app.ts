@@ -1,16 +1,14 @@
-import * as Server from './config/server';
-import * as Database from './config/database';
-import { getServerConfigs } from './config/config';
-
-import ExampleRoute from './src/routes/example';
+import * as App from './src';
+import logger from './src/commons/logger';
+import { Config, Database, Server } from './src/configurations';
 
 console.log(`Running enviroment ${process.env.NODE_ENV || 'dev'}`);
 
-// Starting Application Server
+const configs = Config.getMicroserviceConfig();
 const server = Server.init();
 
-server.listen(process.env.port || getServerConfigs().port, () => {
-  console.log('Servidor ON');
-  Database.init();
-  ExampleRoute(server);
+server.listen(process.env.port || configs.server.port, async () => {
+  await Database.init();
+  logger.info('Servidor ON');
+  App.init(server);
 });

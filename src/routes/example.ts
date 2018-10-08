@@ -1,32 +1,36 @@
 import { Router } from 'express';
-import { IDatabase } from '../../config/database';
+import { FieldRequest } from '../commons/enums/validator';
+import { RequestValidator } from '../commons/validators';
 import ExampleController from '../controllers/example';
-import { ExampleJoi } from '../models/example';
-import * as RequestValidator from '../commons/validators/request-validator';
+import { Jois } from '../models';
 
-export default function(server: Router) {
+export const init = (server: Router) => {
   const exampleController = new ExampleController();
-
   server.post(
     '/v1/example',
-    RequestValidator.validateBody(ExampleJoi),
+    RequestValidator.validate(Jois.example, FieldRequest.Body),
     exampleController.add.bind(exampleController)
   );
-
   server.put(
     '/v1/example/:id',
+    RequestValidator.validate(Jois.example, FieldRequest.Body),
+    RequestValidator.validate(Jois.exampleId, FieldRequest.Params),
     exampleController.update.bind(exampleController)
   );
-
+  server.patch(
+    '/v1/example/:id',
+    RequestValidator.validate(Jois.exampleId, FieldRequest.Params),
+    exampleController.updateParams.bind(exampleController)
+  );
   server.get(
     '/v1/example/:id',
+    RequestValidator.validate(Jois.exampleId, FieldRequest.Params),
+    RequestValidator.validate(Jois.fields, FieldRequest.Query),
     exampleController.findById.bind(exampleController)
   );
-
-  server.get('/v1/examples', exampleController.findAll.bind(exampleController));
-
-  server.delete(
-    '/v1/example/:id',
-    exampleController.remove.bind(exampleController)
+  server.get(
+    '/v1/example',
+    RequestValidator.validate(Jois.fields, FieldRequest.Query),
+    exampleController.findAll.bind(exampleController)
   );
-}
+};
