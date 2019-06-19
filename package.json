@@ -4,8 +4,9 @@
   "description": "Rest Service structure with Node.js, TypeScript, Express and Mongoose.",
   "main": "app.js",
   "scripts": {
-    "build": "tsc && npm run cp-config && npm start",
-    "cp-config": "mkdir -p build/src/configurations/env && cp src/configurations/env/config.\"$NODE_ENV\".json build/src/configurations/env",
+    "build": "tsc && npm run cp-config && npm run cp-endpoints && npm start",
+    "cp-config": "mkdir -p build/src/config/env && cp src/config/env/.env.\"$NODE_ENV\" build/src/config/env",
+    "cp-endpoints": "cp -r src/config/endpoints build/src/config",
     "lint": "tslint src/**/*.ts -p tsconfig.json -t verbose",
     "lint-fix": "tslint --fix src/**/*.ts -p tsconfig.json -t verbose",
     "start": "node build/app.js"
@@ -21,24 +22,22 @@
   },
   "homepage": "https://github.com/BiaNobrega/nodejs-rest-service#readme",
   "dependencies": {
-    "body-parser": "^1.18.2",
-    "express": "^4.16.3",
-    "http-status": "^1.0.1",
-    "joi": "^13.1.2",
-    "mongoose": "^5.2.16",
-    "nconf": "^0.10.0",
-    "winston": "^3.0.0"
+    "@spms-apps/ts-logger": "0.0.5",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "helmet": "^3.18.0",
+    "http-status": "^1.3.2",
+    "module-alias": "^2.2.0",
+    "mongoose": "^5.6.0"
   },
   "devDependencies": {
-    "@types/body-parser": "^1.16.5",
-    "@types/express": "^4.11.1",
-    "@types/http-status": "^0.2.30",
-    "@types/joi": "^13.0.7",
-    "@types/mongoose": "^5.2.16",
-    "@types/nconf": "0.0.37",
-    "@types/node": "^9.6.0",
-    "@types/winston": "^2.3.9",
-    "tslint": "^5.9.1",
-    "typescript": "^2.5.3"
+    "@types/dotenv": "^6.1.1",
+    "@types/helmet": "0.0.43",
+    "@types/module-alias": "^2.0.0",
+    "@types/mongoose": "^5.5.6",
+    "@types/node": "^9.6.49",
+    "tslint": "^5.17.0",
+    "typescript": "^3.5.2"
   }
 }

@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import { CheckRoute, ExampleRoute } from './routes/';
+import { ExampleRoute } from './routes/example';
 
 export const init = (server: Router) => {
-  CheckRoute.init(server);
-  ExampleRoute.init(server);
+  new ExampleRoute().init(server);
 };

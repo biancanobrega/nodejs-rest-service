@@ -1,9 +1,9 @@
-import { Database } from '../../configurations';
-import { DataSchema } from '../../models';
+import { ModelsName } from '@commons/enums/database';
+import { IExampleDocument } from '@models/interfaces';
 import { GenericRepository } from './generic';
 
-export default class ExampleRepository extends GenericRepository<DataSchema.Example.IDoc> {
+export default class ExampleRepository extends GenericRepository<IExampleDocument> {
   constructor() {
-    super(Database.getDatabaseModels().example);
+    super(ModelsName.Example);
   }
 }

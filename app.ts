@@ -1,14 +1,14 @@
+import aliasConfig from './src/config/alias-config';
+aliasConfig(__dirname);
+import { Database, Server } from '@config/index';
 import * as App from './src';
-import logger from './src/commons/logger';
-import { Config, Database, Server } from './src/configurations';
 
-console.log(`Running enviroment ${process.env.NODE_ENV || 'dev'}`);
+const bootstrap = async () => {
+  const server = Server.getInstance();
+  await server.init();
+  await Database.getInstance().init();
 
-const configs = Config.getMicroserviceConfig();
-const server = Server.init();
+  App.init(server.app);
+};
 
-server.listen(process.env.port || configs.server.port, async () => {
-  await Database.init();
-  logger.info('Servidor ON');
-  App.init(server);
-});
+bootstrap();

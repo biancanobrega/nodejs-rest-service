@@ -1,8 +1,15 @@
+import {
+  basicLog,
+  httpReqLog,
+  LogLevels,
+  parseFilePath
+} from '@spms-apps/ts-logger';
 import { Request, Response } from 'express';
 import * as HTTP_CODES from 'http-status';
-import { Enums, logger, Utils } from '../commons';
-import { DataSchema, Interfaces } from '../models';
+import { Enums, Utils } from '../commons';
+import { ExampleDto } from '../models/dtos/example';
 import { Repository } from '../providers';
+import { ExampleParser } from '../providers/helpers/example-parser';
 
 export default class AppsController {
   private exampleRepository: Repository.ExampleRepository;
@@ -13,73 +20,60 @@ export default class AppsController {
 
   public add = async (req: Request, res: Response) => {
     try {
-      const example: Interfaces.IExample = req.body;
+      httpReqLog(LogLevels.info, parseFilePath(__filename), req);
+      const example: ExampleDto = req.body;
       const result = await this.exampleRepository.add(
-        example as DataSchema.Example.IDoc
+        ExampleParser.dtoToDocument(example)
       );
-      res.status(HTTP_CODES.CREATED).send(result);
+      res.status(HTTP_CODES.CREATED).send(ExampleParser.documentToDto(result));
     } catch (error) {
-      logger.error(`[AppsController - add: ${error.message}]`);
-      res.status(Utils.ErrorUtil.generateCodeHttp(error)).send(error.message);
+      basicLog(LogLevels.error, parseFilePath(__filename), error);
+      // Criar validações de erros
+      res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).send(error.message);
     }
   }
 
   public update = async (req: Request, res: Response) => {
     try {
-      const exampleId: string = req.params.id;
-      const example: Interfaces.IExample = req.body;
+      const example: ExampleDto = req.body;
+      example.id = req.params.id;
       const result = await this.exampleRepository.update(
-        exampleId,
-        example as DataSchema.Example.IDoc
+        example.id,
+        ExampleParser.dtoToDocument(example)
       );
-      res.send(result);
+      res.send(ExampleParser.documentToDto(result));
     } catch (error) {
-      logger.error(`[AppsController - update: ${error.message}]`);
-      res.status(Utils.ErrorUtil.generateCodeHttp(error)).send(error.message);
-    }
-  }
-
-  public updateParams = async (req: Request, res: Response) => {
-    try {
-      const exampleId: string = req.params.id;
-      const example: Interfaces.IExample = req.body;
-      const result = await this.exampleRepository.update(
-        exampleId,
-        example as DataSchema.Example.IDoc
-      );
-      res.send(result);
-    } catch (error) {
-      logger.error(`[AppsController - updateParams: ${error.message}]`);
-      res.status(Utils.ErrorUtil.generateCodeHttp(error)).send(error.message);
+      // Criar validações de erros
+      res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).send(error.message);
     }
   }
 
   public findAll = async (req: Request, res: Response) => {
     try {
-      const query: Enums.Example.InformationsFields[] = req.query.fields;
+      const query: Enums.InformationsFields[] = req.query.fields;
 
       const fields = query ? Utils.StringUtil.arrayToString(query) : undefined;
       const result = await this.exampleRepository.findAll(fields);
       typeof result !== undefined && result.length > 0
-        ? res.send(result)
+        ? res.send(result) /* res.send(ExampleHelper.documentsToDtos(result)) */
         : res.sendStatus(HTTP_CODES.NO_CONTENT);
     } catch (error) {
-      logger.error(`[AppsController - findAll: ${error.message}]`);
-      res.status(Utils.ErrorUtil.generateCodeHttp(error)).send(error.message);
+      // Criar validações de erros
+      res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).send(error.message);
     }
   }
 
   public findById = async (req: Request, res: Response) => {
     try {
       const appId: string = req.params.id;
-      const query: Enums.Example.InformationsFields[] = req.query.fields;
+      const query: Enums.InformationsFields[] = req.query.fields;
 
       const fields = query ? Utils.StringUtil.arrayToString(query) : undefined;
       const result = await this.exampleRepository.findById(appId, fields);
-      result ? res.send(result) : res.sendStatus(HTTP_CODES.NO_CONTENT);
+      result ? res.send(ExampleParser.documentToDto(result)) : res.sendStatus(HTTP_CODES.NO_CONTENT);
     } catch (error) {
-      logger.error(`[AppsController - findAll: ${error.message}]`);
-      res.status(Utils.ErrorUtil.generateCodeHttp(error)).send(error.message);
+      // Criar validações de erros
+      res.status(HTTP_CODES.INTERNAL_SERVER_ERROR).send(error.message);
     }
   }
 }

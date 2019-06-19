@@ -1,5 +1,5 @@
-export interface IExample {
-  _id?: string;
+import { Document } from 'mongoose';
+export interface IExampleDocument extends Document {
   name: string;
   description: string;
   createdAt?: Date;
